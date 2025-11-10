@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "357148531101",
+    "project_id": "urclip-mvp",
+    "storage_bucket": "urclip-mvp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357148531101:android:c97d640968efda6e797774",
+        "android_client_info": {
+          "package_name": "com.example.urclip_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF0i5NxwyQTcOhsn9NJi2MFRODfUi13Uw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

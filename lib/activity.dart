@@ -1,14 +1,37 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:urclip_app/models/video_model.dart';
+import 'package:urclip_app/videodetailpage.dart';
 import 'package:urclip_app/home.dart';
 import 'package:urclip_app/profile.dart';
 import 'package:urclip_app/yourvideo.dart';
 
-class ActivityScreen extends StatelessWidget {
-  // Menerima judul lapangan sebagai parameter
+class ActivityScreen extends StatefulWidget {
   final String courtName;
-  final int _selectedIndex = 0;
-
   const ActivityScreen({super.key, required this.courtName});
+
+  @override
+  State<ActivityScreen> createState() => _ActivityScreenState();
+}
+
+class _ActivityScreenState extends State<ActivityScreen> {
+  late Future<List<VideoModel>> _videosFuture;
+
+  Future<List<VideoModel>> _loadVideos() async {
+    final jsonString = await rootBundle.loadString('assets/data/videos.json');
+    final List data = json.decode(jsonString);
+    return data
+        .map((e) => VideoModel.fromJson(e))
+        .where((video) => video.court == widget.courtName)
+        .toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _videosFuture = _loadVideos();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,117 +40,124 @@ class ActivityScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(
-              'assets/images/logourclip.png',
-              height: 60,
-            ),
+            Image.asset('assets/images/logourclip.png', height: 60),
             Row(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.arrow_back_ios,
-                      color: Colors.black, size: 20),
-                  onPressed: () {
-                    Navigator.pop(context); // Kembali ke layar sebelumnya
-                  },
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
+                  onPressed: () => Navigator.pop(context),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Text(
-                    courtName,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
+                    widget.courtName,
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
-                ),
-                SizedBox(
-                    width: 80), // Spasi untuk memisahkan judul dan ikon filter
-                IconButton(
-                  icon: const Icon(Icons.tune,
-                      color: Colors.black), // Ikon filter
-                  onPressed: () {
-                    // TODO: Aksi untuk filter
-                  },
                 ),
               ],
             ),
-
-            const SizedBox(height: 16),
-
-            // Konten Grid Video (Menggunakan GridView.builder agar bisa di-scroll)
             Expanded(
-              child: GridView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 2 kolom
-                  crossAxisSpacing: 16.0, // Jarak horizontal antar item
-                  mainAxisSpacing: 16.0, // Jarak vertikal antar item
-                  childAspectRatio:
-                      0.8, // Rasio aspek item (tinggi lebih besar dari lebar)
-                ),
-                itemCount: 8, // Contoh 8 item video
-                itemBuilder: (context, index) {
-                  return _buildVideoCardPlaceholder();
+              child: FutureBuilder<List<VideoModel>>(
+                future: _videosFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                  final videos = snapshot.data ?? [];
+                  if (videos.isEmpty) {
+                    return const Center(child: Text('No videos available.'));
+                  }
+
+                  return GridView.builder(
+                    padding: const EdgeInsets.all(16),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 0.75,
+                    ),
+                    itemCount: videos.length,
+                    itemBuilder: (context, index) {
+                      final video = videos[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => VideoDetailPage(
+                                videoId: video.id,
+                                title: video.title,
+                                videoUrl: video.downloadUrl,
+                                thumbnailUrl: video.thumbnailUrl,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          clipBehavior: Clip.antiAlias,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: Image.asset(
+                                  video.thumbnailUrl,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Positioned(
+                                left: 8,
+                                bottom: 8,
+                                right: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                    ),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    video.title,
+                                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
                 },
               ),
             ),
           ],
         ),
       ),
-
-      // Bottom Navigation Bar (Sama seperti HomeScreen, tapi _selectedIndex bisa berbeda)
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
+        selectedIndex: 0,
         onDestinationSelected: (index) {
           if (index == 0) {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
           } else if (index == 1) {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const YourVideoScreen()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const YourVideoScreen()));
           } else if (index == 2) {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const ProfileScreen()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ProfileScreen()));
           }
         },
-        backgroundColor: Colors.white,
-        indicatorColor: Colors.grey[300],
-        // Nav bar ini sama dengan di ActivityScreen
         destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons
-                .star_border_outlined), // Menggunakan ikon bintang untuk Activity
-            selectedIcon: Icon(Icons.star),
-            label: 'Activity', // Mengganti label Home menjadi Activity
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.star_border_outlined),
-            selectedIcon: Icon(Icons.star),
-            label: 'Your Video',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          NavigationDestination(icon: Icon(Icons.star_border_outlined), label: 'Activity'),
+          NavigationDestination(icon: Icon(Icons.star_border_outlined), label: 'Your Video'),
+          NavigationDestination(icon: Icon(Icons.person_outline), label: 'Profile'),
         ],
       ),
-    );
-  }
-
-  // Widget helper untuk placeholder kartu video
-  Widget _buildVideoCardPlaceholder() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[300], // Warna abu-abu sebagai placeholder
-        borderRadius: BorderRadius.circular(12),
-      ),
-      // Anda bisa menambahkan ikon play atau teks di sini jika mau
-      // child: Icon(Icons.play_circle_fill, size: 50, color: Colors.grey[500]),
     );
   }
 }

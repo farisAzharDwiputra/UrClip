@@ -1,0 +1,37 @@
+[
+  {
+    "id": "senopati1",
+    "title": "Padel Clip 1",
+    "court": "Senopati Padel Court",
+    "downloadUrl": "assets/videos/Padel.mp4",
+    "thumbnailUrl": "assets/thumbnails/Download.png"
+  },
+  {
+    "id": "senopati2",
+    "title": "Padel Clip 2",
+    "court": "Senopati Padel Court",
+    "downloadUrl": "assets/videos/Padel1.mp4",
+    "thumbnailUrl": "assets/thumbnails/Download1.png"
+  },
+  {
+    "id": "senopati3",
+    "title": "Padel Clip 3",
+    "court": "Senopati Padel Court",
+    "downloadUrl": "assets/videos/Padel2.mp4",
+    "thumbnailUrl": "assets/thumbnails/Download2.png"
+  },
+  {
+    "id": "senopati4",
+    "title": "Padel Clip 4",
+    "court": "Senopati Padel Court",
+    "downloadUrl": "assets/videos/Padel3.mp4",
+    "thumbnailUrl": "assets/thumbnails/Download3.png"
+  },
+  {
+    "id": "kemang1",
+    "title": "Padel Clip 5",
+    "court": "Kemang Padel Court",
+    "downloadUrl": "assets/videos/Padel4.mp4",
+    "thumbnailUrl": "assets/thumbnails/Download2.png"
+  }
+]
