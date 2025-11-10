@@ -1,7 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:urclip_app/WelcomePage.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  print('✅ Firebase initialized');
+
+  // 🔍 TEMP: test Firestore read
+  try {
+    final testSnapshot = await FirebaseFirestore.instance.collection('videos').limit(1).get();
+    print('🔥 Firestore test read success. Found ${testSnapshot.docs.length} docs.');
+  } catch (e) {
+    print('❌ Firestore test failed: $e');
+  }
+
   runApp(const MyApp());
 }
 

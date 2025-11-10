@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:urclip_app/models/video_model.dart';
+import 'package:urclip_app/utils/local_storage.dart';
+import 'package:urclip_app/videodetailpage.dart';
 import 'package:urclip_app/home.dart';
 import 'package:urclip_app/profile.dart';
-
-// (Opsional) Impor layar lain untuk navigasi
-// import 'activity_screen.dart';
-// import 'profile_screen.dart';
 
 class YourVideoScreen extends StatefulWidget {
   const YourVideoScreen({super.key});
@@ -14,109 +13,128 @@ class YourVideoScreen extends StatefulWidget {
 }
 
 class _YourVideoScreenState extends State<YourVideoScreen> {
-  // Index untuk "Your Video" adalah 1
-  final int _selectedIndex = 1;
+  late Future<List<VideoModel>> _purchasedFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _purchasedFuture = LocalStorage.getPurchasedVideos();
+  }
+
+  Future<void> _refresh() async {
+    final vids = LocalStorage.getPurchasedVideos();
+    setState(() {
+      _purchasedFuture = vids;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 1. APPBAR (Hanya Logo)
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
-        // Hapus tombol kembali secara otomatis
         automaticallyImplyLeading: false,
-        titleSpacing: 16.0, // Memberi padding kiri untuk logo
-        title: Image.asset(
-          'assets/images/logourclip.png',
-          height: 24,
-        ),
+        title: Image.asset('assets/images/logourclip.png', height: 24),
       ),
+      body: FutureBuilder<List<VideoModel>>(
+        future: _purchasedFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final videos = snapshot.data ?? [];
+          if (videos.isEmpty) {
+            return const Center(child: Text('You haven’t purchased any videos yet.'));
+          }
 
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Judul Halaman
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-              child: Text(
-                'Your Video',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
+          return RefreshIndicator(
+            onRefresh: _refresh,
+            child: GridView.builder(
+              padding: const EdgeInsets.all(16.0),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 0.75,
               ),
+              itemCount: videos.length,
+              itemBuilder: (context, index) {
+                final video = videos[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => VideoDetailPage(
+                          videoId: video.id,
+                          title: video.title,
+                          videoUrl: video.downloadUrl,
+                          thumbnailUrl: video.thumbnailUrl,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: Image.asset(video.thumbnailUrl, fit: BoxFit.cover),
+                        ),
+                        Positioned(
+                          left: 8,
+                          bottom: 8,
+                          right: 8,
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                              ),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              video.title,
+                              style: const TextStyle(
+                                  color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
-            const SizedBox(height: 16),
-
-            // Konten Grid Video
-            Expanded(
-              child: GridView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 2 kolom
-                  crossAxisSpacing: 16.0, // Jarak horizontal
-                  mainAxisSpacing: 16.0, // Jarak vertikal
-                  childAspectRatio: 0.8, // Rasio tinggi:lebar
-                ),
-                itemCount: 5, // Sesuai gambar, ada 5 item
-                itemBuilder: (context, index) {
-                  return _buildVideoCardPlaceholder();
-                },
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
-
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
+        selectedIndex: 1,
         onDestinationSelected: (index) {
           if (index == 0) {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()));
-          } else if (index == 1) {
             Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const YourVideoScreen()));
+              context,
+              MaterialPageRoute(builder: (_) => const HomeScreen()),
+            );
           } else if (index == 2) {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const ProfileScreen()));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const ProfileScreen()),
+            );
           }
         },
-        backgroundColor: Colors.white,
-        indicatorColor: Colors.grey[300],
-        // Nav bar ini sama dengan di ActivityScreen
         destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.star_border_outlined),
-            selectedIcon: Icon(Icons.star),
-            label: 'Activity',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.star_border_outlined),
-            selectedIcon: Icon(Icons.star),
-            label: 'Your Video',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline), // Sesuai gambar
-            selectedIcon: Icon(Icons.star),
-            label: 'Profile',
-          ),
+          NavigationDestination(icon: Icon(Icons.star_border_outlined), label: 'Activity'),
+          NavigationDestination(icon: Icon(Icons.star), label: 'Your Video'),
+          NavigationDestination(icon: Icon(Icons.person_outline), label: 'Profile'),
         ],
-      ),
-    );
-  }
-
-  // Widget helper untuk placeholder kartu video (sama seperti di ActivityScreen)
-  Widget _buildVideoCardPlaceholder() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[300], // Warna abu-abu sebagai placeholder
-        borderRadius: BorderRadius.circular(12),
       ),
     );
   }
