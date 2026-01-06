@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:urclip_app/activity.dart';
 import 'package:urclip_app/profile.dart';
 import 'package:urclip_app/yourvideo.dart';
+import 'package:urclip_app/clipsimulationpage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,6 +24,10 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 24),
             _buildSearchBar(),
             const SizedBox(height: 24),
+            // const SizedBox(height: 24),
+            _buildClipCard(),
+            const SizedBox(height: 24),
+
             _buildCourtCard(
               imagePath: 'images/konten1.png',
               title: 'Senopati Padel Court',
@@ -125,6 +130,48 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  Widget _buildClipCard() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const ClipSimulationPage(),
+          ),
+        );
+      },
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        color: Colors.deepPurple,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: const [
+              Icon(Icons.cut, color: Colors.white, size: 32),
+              SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  'Clip Your Game\nCreate highlights from the last minute',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Icon(Icons.arrow_forward_ios,
+                  color: Colors.white, size: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 
   // Widget helper untuk Kartu Lapangan
   Widget _buildCourtCard({required String imagePath, required String title}) {

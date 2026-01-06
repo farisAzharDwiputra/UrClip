@@ -83,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
               Text(
-                'Itunuoluwa Abidoye',
+                'Moe Lester',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,

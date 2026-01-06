@@ -3,35 +3,129 @@
     "id": "senopati1",
     "title": "Padel Clip 1",
     "court": "Senopati Padel Court",
-    "downloadUrl": "assets/videos/Padel.mp4",
-    "thumbnailUrl": "assets/thumbnails/Download.png"
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/1.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
   },
   {
     "id": "senopati2",
     "title": "Padel Clip 2",
     "court": "Senopati Padel Court",
-    "downloadUrl": "assets/videos/Padel1.mp4",
-    "thumbnailUrl": "assets/thumbnails/Download1.png"
+    "courtNumber": 2,
+    "downloadUrl": "assets/videos/2.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
   },
   {
     "id": "senopati3",
     "title": "Padel Clip 3",
     "court": "Senopati Padel Court",
-    "downloadUrl": "assets/videos/Padel2.mp4",
-    "thumbnailUrl": "assets/thumbnails/Download2.png"
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/3.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
   },
   {
     "id": "senopati4",
     "title": "Padel Clip 4",
     "court": "Senopati Padel Court",
-    "downloadUrl": "assets/videos/Padel3.mp4",
-    "thumbnailUrl": "assets/thumbnails/Download3.png"
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/4.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png",
+    "clipStartSeconds": 10
+  },
+  {
+    "id": "senopati5",
+    "title": "Padel Clip 5",
+    "court": "Kemang Padel Court",
+    "courtNumber": 3,
+    "downloadUrl": "assets/videos/5.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
+  },
+  {
+    "id": "senopati6",
+    "title": "Padel Clip 6",
+    "court": "Senopati Padel Court",
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/6.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
+  },
+  {
+    "id": "senopati7",
+    "title": "Padel Clip 7",
+    "court": "Senopati Padel Court",
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/7.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
+  },
+  {
+    "id": "senopati8",
+    "title": "Padel Clip 8",
+    "court": "Senopati Padel Court",
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/8.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
   },
   {
     "id": "kemang1",
+    "title": "Padel Clip 1",
+    "court": "Kemang Padel Court",
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/9.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
+  },
+  {
+    "id": "kemang2",
+    "title": "Padel Clip 2",
+    "court": "Kemang Padel Court",
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/10.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
+  },
+  {
+    "id": "kemang3",
+    "title": "Padel Clip 3",
+    "court": "Kemang Padel Court",
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/11.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
+  },
+  {
+    "id": "kemang4",
+    "title": "Padel Clip 4",
+    "court": "Kemang Padel Court",
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/12.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
+  },
+  {
+    "id": "kemang5",
     "title": "Padel Clip 5",
     "court": "Kemang Padel Court",
-    "downloadUrl": "assets/videos/Padel4.mp4",
-    "thumbnailUrl": "assets/thumbnails/Download2.png"
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/13.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
+  },
+  {
+    "id": "kemang6",
+    "title": "Padel Clip 6",
+    "court": "Kemang Padel Court",
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/14.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
+  },
+  {
+    "id": "kemang7",
+    "title": "Padel Clip 7",
+    "court": "Kemang Padel Court",
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/15.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
+  },
+  {
+    "id": "kemang8",
+    "title": "Padel Clip 8",
+    "court": "Kemang Padel Court",
+    "courtNumber": 1,
+    "downloadUrl": "assets/videos/16.mp4",
+    "thumbnailUrl": "assets/thumbnails/thumbnail.png"
   }
 ]

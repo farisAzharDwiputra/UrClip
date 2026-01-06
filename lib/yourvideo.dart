@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:urclip_app/models/video_model.dart';
-import 'package:urclip_app/utils/local_storage.dart';
+import 'package:urclip_app/local_storage.dart';
 import 'package:urclip_app/videodetailpage.dart';
 import 'package:urclip_app/home.dart';
 import 'package:urclip_app/profile.dart';
@@ -35,7 +35,7 @@ class _YourVideoScreenState extends State<YourVideoScreen> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: Image.asset('assets/images/logourclip.png', height: 24),
+        title: Image.asset('images/logourclip.png', height: 60),
       ),
       body: FutureBuilder<List<VideoModel>>(
         future: _purchasedFuture,
