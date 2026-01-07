@@ -1,23 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:urclip_app/models/video_model.dart';
-import 'package:urclip_app/local_storage.dart';
-import 'package:urclip_app/ConfirmPhonePage.dart';
 import 'package:urclip_app/ConfirmPaymentPage.dart';
+import 'package:urclip_app/ConfirmPhonePage.dart';
+import 'package:urclip_app/models/video_model.dart';
+import 'package:urclip_app/home.dart';
 
-class PaymentSimulationPage extends StatefulWidget {
+class PaymentScreen extends StatefulWidget {
+  final String videoId;
+  final String title;
+  final String videoUrl;
+  final String? thumbnailUrl;
+  final VoidCallback onPaymentSuccess;
   final VideoModel video;
 
-  const PaymentSimulationPage({
+  const PaymentScreen({
     super.key,
+    required this.videoId,
+    required this.title,
+    required this.videoUrl,
+    this.thumbnailUrl,
+    required this.onPaymentSuccess,
     required this.video,
   });
-
   @override
-  State<PaymentSimulationPage> createState() =>
-      _PaymentSimulationPageState();
+  State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
-class _PaymentSimulationPageState extends State<PaymentSimulationPage> {
+class _PaymentScreenState extends State<PaymentScreen> {
   String _selectedPayment = 'QRIS';
 
   final TextEditingController _referralController =
@@ -28,20 +36,19 @@ class _PaymentSimulationPageState extends State<PaymentSimulationPage> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(),
               const SizedBox(height: 20),
-
               GestureDetector(
-                onTap: () => Navigator.pop(context),
+                onTap: () {
+                  Navigator.pop(context);
+                },
                 child: const Row(
                   children: [
-                    Icon(Icons.arrow_back_ios,
-                        size: 18, color: Colors.black87),
+                    Icon(Icons.arrow_back_ios, size: 18, color: Colors.black87),
                     Text(
                       "Back",
                       style: TextStyle(
@@ -53,10 +60,7 @@ class _PaymentSimulationPageState extends State<PaymentSimulationPage> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 24),
-
-              // PAYMENT METHODS CARD
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -81,17 +85,14 @@ class _PaymentSimulationPageState extends State<PaymentSimulationPage> {
                       ),
                     ),
                     const SizedBox(height: 10),
-
-                    _buildRadioItem("QRIS"),
-                    _buildRadioItem("DANA"),
-                    _buildRadioItem("OVO"),
-                    _buildRadioItem("GOPAY"),
+                    _buildRadioItem("QRIS", "assets/qris.png"),
+                    _buildRadioItem("DANA", "assets/dana.png"),
+                    _buildRadioItem("OVO", "assets/ovo.png"),
+                    _buildRadioItem("GOPAY", "assets/gopay.png"),
                   ],
                 ),
               ),
-
               const SizedBox(height: 24),
-
               const Text(
                 "More payment option",
                 style: TextStyle(
@@ -99,25 +100,19 @@ class _PaymentSimulationPageState extends State<PaymentSimulationPage> {
                   fontSize: 14,
                 ),
               ),
-
               const SizedBox(height: 12),
-
               _buildOptionCard(
                 title: "Crypto",
                 icon: Icons.currency_bitcoin,
                 iconColor: Colors.orange,
               ),
-
               const SizedBox(height: 12),
-
               _buildOptionCard(
                 title: "Credit/ Debit Card",
                 icon: Icons.credit_card,
                 iconColor: Colors.indigo,
               ),
-
               const SizedBox(height: 24),
-
               const Text(
                 "Enter Referral Code",
                 style: TextStyle(
@@ -126,36 +121,58 @@ class _PaymentSimulationPageState extends State<PaymentSimulationPage> {
                   color: Color(0xFF2D3E50),
                 ),
               ),
-
               const SizedBox(height: 8),
-
               TextField(
                 controller: _referralController,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 16),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        const BorderSide(color: Color(0xFF2D3E50)),
+                    borderSide: const BorderSide(color: Color(0xFF2D3E50)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                        color: Color(0xFF2D3E50), width: 2),
+                    borderSide:
+                        const BorderSide(color: Color(0xFF2D3E50), width: 2),
                   ),
-                  suffixIcon: const Icon(Icons.check_circle,
-                      color: Colors.green),
+                  suffixIcon:
+                      const Icon(Icons.check_circle, color: Colors.green),
                 ),
               ),
-
               const SizedBox(height: 30),
-
               SizedBox(
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                  onPressed: _handleContinue,
+                  onPressed: () {
+                    if (_selectedPayment == 'GOPAY' ||
+                        _selectedPayment == 'OVO' ||
+                        _selectedPayment == 'DANA') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Confirmphonepage(
+                            title: widget.title,
+                            amount: "IDR 25.000",
+                            onPaymentSuccess: widget.onPaymentSuccess,
+                            paymentMethod: _selectedPayment,
+                          ),
+                        ),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Confirmpaymentpage(
+                            title: widget.title,
+                            amount: "IDR 25.000",
+                            onPaymentSuccess: widget.onPaymentSuccess,
+                          ),
+                        ),
+                      );
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF555B3E),
                     shape: RoundedRectangleBorder(
@@ -180,7 +197,6 @@ class _PaymentSimulationPageState extends State<PaymentSimulationPage> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
             ],
           ),
@@ -189,56 +205,30 @@ class _PaymentSimulationPageState extends State<PaymentSimulationPage> {
     );
   }
 
-  // ================= LOGIC =================
-
-  Future<void> _handleContinue() async {
-    // ✅ REAL PURCHASE (WORKING)
-    await LocalStorage.purchaseVideo(widget.video);
-
-    // UI FLOW ONLY
-    if (_selectedPayment == 'GOPAY' ||
-        _selectedPayment == 'OVO' ||
-        _selectedPayment == 'DANA') {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => Confirmphonepage(
-            title: widget.video.title,
-            amount: "IDR 25.000",
-            paymentMethod: _selectedPayment,
-            onPaymentSuccess: () {},
-          ),
-        ),
-      );
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => Confirmpaymentpage(
-            title: widget.video.title,
-            amount: "IDR 25.000",
-            onPaymentSuccess: () {},
-          ),
-        ),
-      );
-    }
-
-    if (mounted) Navigator.pop(context, true);
-  }
-
-  // ================= UI HELPERS =================
-
   Widget _buildHeader() {
-    return Container(
-      child: Image.asset('images/logourclip.png', height: 60),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            Image.asset('images/logourclip.png', height: 60),
+          ],
+        ),
+        const SizedBox(height: 8),
+        // Judul Halaman
+      ],
     );
   }
 
-  Widget _buildRadioItem(String value) {
-    final isSelected = _selectedPayment == value;
+  Widget _buildRadioItem(String value, String assetPath) {
+    bool isSelected = _selectedPayment == value;
 
     return GestureDetector(
-      onTap: () => setState(() => _selectedPayment = value),
+      onTap: () {
+        setState(() {
+          _selectedPayment = value;
+        });
+      },
       child: Container(
         margin: const EdgeInsets.only(bottom: 15),
         color: Colors.transparent,
@@ -250,9 +240,7 @@ class _PaymentSimulationPageState extends State<PaymentSimulationPage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected
-                      ? const Color(0xFF6B5E96)
-                      : Colors.grey,
+                  color: isSelected ? const Color(0xFF6B5E96) : Colors.grey,
                   width: 1.5,
                 ),
               ),
@@ -274,17 +262,14 @@ class _PaymentSimulationPageState extends State<PaymentSimulationPage> {
               value,
               style: TextStyle(
                 fontSize: 16,
-                color: isSelected
-                    ? const Color(0xFF6B5E96)
-                    : Colors.grey[600],
-                fontWeight:
-                    isSelected ? FontWeight.w500 : FontWeight.normal,
+                color: isSelected ? const Color(0xFF6B5E96) : Colors.grey[600],
+                fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
               ),
             ),
             const Spacer(),
             SizedBox(
               height: 24,
-              child: _getPaymentLogo(value),
+              child: _getPlaceholderLogo(value),
             ),
           ],
         ),
@@ -292,11 +277,10 @@ class _PaymentSimulationPageState extends State<PaymentSimulationPage> {
     );
   }
 
-  Widget _buildOptionCard({
-    required String title,
-    required IconData icon,
-    required Color iconColor,
-  }) {
+  Widget _buildOptionCard(
+      {required String title,
+      required IconData icon,
+      required Color iconColor}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
@@ -330,30 +314,38 @@ class _PaymentSimulationPageState extends State<PaymentSimulationPage> {
             ),
           ),
           const Spacer(),
-          const Icon(Icons.arrow_forward_ios,
-              size: 16, color: Colors.grey),
+          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
         ],
       ),
     );
   }
 
-  Widget _getPaymentLogo(String type) {
-    const double h = 25;
+  Widget _getPlaceholderLogo(String type) {
+    const double logoHeight = 25.0;
 
     switch (type) {
       case 'QRIS':
-        return const Text(
-          "QRIS",
-          style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.italic),
-        );
+        return const Text("QRIS",
+            style: TextStyle(
+                fontWeight: FontWeight.w900, fontStyle: FontStyle.italic));
       case 'DANA':
-        return Image.asset('images/dana.png', height: h);
+        return Image.asset(
+          'images/dana.png',
+          height: logoHeight,
+          fit: BoxFit.contain,
+        );
       case 'OVO':
-        return Image.asset('images/ovo.png', height: h);
+        return Image.asset(
+          'images/ovo.png',
+          height: logoHeight,
+          fit: BoxFit.contain,
+        );
       case 'GOPAY':
-        return Image.asset('images/gopay.png', height: h);
+        return Image.asset(
+          'images/gopay.png',
+          height: logoHeight,
+          fit: BoxFit.contain,
+        );
       default:
         return const SizedBox();
     }
